@@ -1,4 +1,5 @@
 "use client";
+import { BASE_URL, BASE_URL_IMG } from "@/api/main";
 import { CartContext } from "@/context/cartContext";
 import { LikeContext } from "@/context/likeContext";
 import Image from "next/image";
@@ -41,11 +42,14 @@ export default function Like() {
   useEffect(() => {
     const fetchData = async () => {
       const fetchPromises = likes.map((i: any) =>
-        fetch(`https://fakestoreapi.com/products/${i}`)
+        fetch(`${BASE_URL}/product/${i}`)
           .then((res) => res.json())
-          .then((json) => json)
+          .then((json) => {
+            return json.data;
+          })
           .catch((err) => console.log(err))
       );
+      console.log(fetchData);
       try {
         const results = await Promise.all(fetchPromises);
         setData(results);
@@ -125,9 +129,7 @@ export default function Like() {
         </div>
         {likes.length !== 0 ? (
           <div className="flex   flex-wrap sm:justify-start justify-center">
-            {data.map((el: MapData) => {
-              const isSelected = selectedProductIds.includes(el.id);
-
+            {data.map((el: any) => {
               return (
                 <div key={el.id} className="p-2 max-w-[235px]">
                   <div className="bg-white rounded-md border flex flex-col justify-center border-[hsla(168,4%,45%,.16)] p-2">
@@ -146,7 +148,7 @@ export default function Like() {
                       <Link href="/singleproduct">
                         <Image
                           className="block w-[180px] h-[180px]"
-                          src={el.image}
+                          src={`${BASE_URL_IMG}/${el.product_image}`}
                           width={"183"}
                           height={"198"}
                           alt="card"

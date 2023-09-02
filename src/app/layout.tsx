@@ -14,7 +14,7 @@ import { LikeContext } from "@/context/likeContext";
 const inter = Inter({ subsets: ["latin"] });
 
 const stripePromise = loadStripe(
-  "pk_test_51NXaxAAt0rSDCgqM4j2kEZDRFSajHGeMNTvjZIOo8zHcfKqAgEdb8P9Aav5VmSCvCzkLwigfrma9vQQSgtGxtpWC009k1VMTwb"
+  "pk_test_51NXaxvHY1oN4piIiEqXSi3YmrYJTfxkBXikQwJDVN3Jqnng6M4niNp2FzRewFrb0Emsbls2x9x7JcoLOf9cz88IQ00ZXC4iGOj"
 );
 
 export const metadata: Metadata = {

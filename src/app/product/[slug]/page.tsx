@@ -10,6 +10,7 @@ import { AiOutlineHeart, AiOutlineShoppingCart } from "react-icons/ai";
 import "./main.css";
 import { LikeContext } from "@/context/likeContext";
 import { CartContext } from "@/context/cartContext";
+import { BASE_URL, BASE_URL_IMG } from "@/api/main";
 export async function getStaticPaths() {
   const paths = await getPostIdList();
   return {
@@ -75,14 +76,35 @@ export default function Page({ params }: any) {
   const [selectedLikeIds, setSelectedLikeIds] = useState<number[]>([]);
   const [max, setMax] = useState<number>(0);
   const [data, setData] = useState<any[]>([]);
+  const [brand, setBrand] = useState<any[]>([]);
+  const [subcategories, setSubcategories] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+
   useEffect(() => {
-    fetch(`https://fakestoreapi.com/products/category/${params.slug}`)
+    fetch(`${BASE_URL}/catalog/${params.slug}`)
       .then((res) => res.json())
       .then((json) => {
-        setData(json);
+        setData(json.data.products);
         setLoading(false);
       });
+    fetch(`${BASE_URL}/catalog/${params.slug}`)
+      .then((res) => res.json())
+      .then((json) => {
+        setBrand(json.data.brands);
+        setLoading(false);
+      });
+    fetch(`${BASE_URL}/catalog/${params.slug}`)
+      .then((res) => res.json())
+      .then((json) => {
+        setSubcategories(json.data.subcategories);
+        setLoading(false);
+      });
+    // fetch(`${BASE_URL}/catalog/${params.slug}`)
+    //   .then((res) => res.json())
+    //   .then((json) => {
+    //     setSubcategories(json.data.subcategories);
+    //     setLoading(false);
+    //   });
   }, []);
   const renderTitle = (title: string) => {
     if (title.length > 40) {
@@ -161,6 +183,15 @@ export default function Page({ params }: any) {
       );
     }
   };
+  const handleBrand = (evt: any) => {
+    fetch(`${BASE_URL}/brand/${evt}`)
+      .then((res) => res.json())
+      .then((json) => {
+        setData(json.data.products);
+        setLoading(false);
+      });
+  };
+
   const categories = data.map((el: any) => {
     return (
       <div
@@ -188,7 +219,7 @@ export default function Page({ params }: any) {
             <Link href="/singleproduct">
               <Image
                 className="block w-[180px] h-[180px]"
-                src={el.image}
+                src={`${BASE_URL_IMG}/${el.product_image}`}
                 width={"183"}
                 height={"198"}
                 alt="card"
@@ -286,47 +317,50 @@ export default function Page({ params }: any) {
                   </div>
                 </div>
                 <div>
-                  <div className="w-full  p-2 h-[228px] bg-white rounded-lg mt-4">
+                  <div className="w-full  p-3 h-[228px] bg-white rounded-lg mt-4">
                     <h3 className="font-semibold pb-1">Brand</h3>
                     <div className="overflow-auto h-[180px] pb-1">
-                      {mainData.map((el) => {
+                      {brand.map((el) => {
                         return (
                           <>
                             <div className="flex justify-between me-3">
                               <div className="flex  items-center gap-1">
-                                <input type="checkbox" />
+                                <input
+                                  type="checkbox"
+                                  onChange={() => handleBrand(el.id)}
+                                />
                                 <span className="text-textColor">
-                                  {el.title}
+                                  {el.brand_name}
                                 </span>
                               </div>
-                              <p className="text-textColor">{el.count}</p>
+                              {/* <p className="text-textColor">{el.count}</p> */}
                             </div>
                           </>
                         );
                       })}
                     </div>
                   </div>
-                  <div className=" p-2 h-[228px] bg-white rounded-lg mt-4">
+                  <div className=" p-3 h-[228px] bg-white rounded-lg mt-4">
                     <h3 className="font-semibold pb-1">Category</h3>
                     <div className="overflow-auto h-[180px] pb-1">
-                      {mainData.map((el) => {
+                      {subcategories.map((el) => {
                         return (
                           <>
                             <div className="flex justify-between me-3">
                               <div className="flex  items-center gap-1">
                                 <input type="checkbox" />
                                 <span className="text-textColor">
-                                  {el.title}
+                                  {el.subcategory_name}
                                 </span>
                               </div>
-                              <p className="text-textColor">{el.count}</p>
+                              {/* <p className="text-textColor">{el.count}</p> */}
                             </div>
                           </>
                         );
                       })}
                     </div>
                   </div>
-                  <div className="  p-2 h-[228px] bg-white rounded-lg mt-4">
+                  <div className="p-3 h-[228px] bg-white rounded-lg mt-4">
                     <h3 className="font-semibold pb-1">Discount</h3>
                     <div className="overflow-auto h-[180px] pb-1">
                       {mainData.map((el) => {

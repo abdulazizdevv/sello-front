@@ -14,7 +14,7 @@ import { GrCart } from "react-icons/gr";
 import { LuHome } from "react-icons/lu";
 import Image from "next/image";
 import Link from "next/link";
-
+import Cookie from "js-cookie";
 import Logo from "../../../public/icons/logo.svg";
 import { useContext, useEffect, useState } from "react";
 import Categories from "@/app/product";
@@ -24,6 +24,8 @@ import { Modal } from "@/widgets/Modal/Modal";
 import { CartContext } from "@/context/cartContext";
 import { LikeContext } from "@/context/likeContext";
 import { ProfileModal } from "@/widgets/Modal/ProfileModal";
+import { VerifyModal } from "@/widgets/Modal/VerifyModal";
+import { BASE_URL } from "@/api/main";
 
 function Navbar() {
   const { cart }: any = useContext(CartContext);
@@ -42,6 +44,7 @@ function Navbar() {
   const [searchResults, setSearchResults] = useState([]);
   const [loginModal, setLoginModal] = useState(false);
   const [loginProfileModal, setLoginProfileModal] = useState(false);
+  const [verifyModal, setVerifyModal] = useState(false);
 
   useEffect(() => {
     let likeIds: any = localStorage.getItem("likeId");
@@ -55,10 +58,10 @@ function Navbar() {
   }, [likeId]);
 
   useEffect(() => {
-    fetch("https://fakestoreapi.com/products")
+    fetch(`${BASE_URL}/product`)
       .then((res) => res.json())
       .then((json) => {
-        setData(json);
+        setData(json.data.products);
       });
   }, []);
 
@@ -85,10 +88,38 @@ function Navbar() {
         "content-type": "application/json",
       },
       body: JSON.stringify({
-      
         email: evt.target[0].value,
         password: evt.target[1].value,
         phone_number: evt.target[2].value,
+      }),
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        if (json) {
+          toast.success("Successfully!", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+          setLoginProfileModal(false);
+          setVerifyModal(true);
+        } else {
+          toast.error("No information entered", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+        }
+      })
+      .catch((err) => console.log(err.message));
+  };
+  const handleSubmitVerify = (evt: any) => {
+    evt.preventDefault();
+    console.log(+evt.target[0].value);
+
+    fetch("http://10.10.1.25:3001/api/auth/verify", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        verifycode: +evt.target[0].value,
       }),
     })
       .then((res) => res.json())
@@ -99,6 +130,8 @@ function Navbar() {
           toast.success("Successfully!", {
             position: toast.POSITION.TOP_RIGHT,
           });
+          // setLoginProfileModal(false);
+          // setVerifyModal(false);
         } else {
           toast.error("No information entered", {
             position: toast.POSITION.TOP_RIGHT,
@@ -333,9 +366,40 @@ function Navbar() {
           </form>
         </div>
       </ProfileModal>
-      <Modal modal={loginModal} setModal={setLoginModal}>
-        {/* <div className=" md:p-5 "></div> */}
-      </Modal>
+      <VerifyModal
+        width={"480px"}
+        title={"Verify"}
+        modal={verifyModal}
+        setModal={setVerifyModal}
+      >
+        <div className=" md:p-5 ">
+          <form
+            className="flex flex-col items-center gap-3 justify-center"
+            onSubmit={handleSubmitVerify}
+          >
+            <div className="flex flex-col gap-2">
+              <label htmlFor="text">Verify Code</label>
+              <input
+                className="w-full p-2 rounded-md outline-none border border-textColor"
+                placeholder="*****"
+                type="text"
+                name="text"
+                id="phone"
+              />
+            </div>
+            <div>
+              <button
+                type="submit"
+                className="bg-mainColor p-3 mt-3 text-white w-[200px]"
+              >
+                <ToastContainer />
+                Login
+              </button>
+            </div>
+          </form>
+        </div>
+      </VerifyModal>
+      <Modal modal={loginModal} setModal={setLoginModal}></Modal>
     </div>
   );
 }

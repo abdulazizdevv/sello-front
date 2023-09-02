@@ -1,2 +1,2 @@
-export const BASE_URL = "http://10.10.1.25:3000/api";
-export const BASE_URL_IMG = "http://10.10.1.25:3000";
+export const BASE_URL = "http://159.65.58.100/api";
+export const BASE_URL_IMG = "http://159.65.58.100";

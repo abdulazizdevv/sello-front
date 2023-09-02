@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Link from "next/link";
+import { BASE_URL, BASE_URL_IMG } from "@/api/main";
 type clickPrev = {
   clickHandler: any;
   hasPrev: any;
@@ -35,14 +36,14 @@ export default function SingleProduct() {
   useEffect(() => {
     const singleId = localStorage.getItem("singleId");
     if (singleId) {
-      fetch(`https://fakestoreapi.com/products/${singleId}`)
+      fetch(`${BASE_URL}/product/${singleId}`)
         .then((res) => res.json())
         .then((json) => {
           if (json) {
             setShow(true);
           }
           setLoading(false);
-          setData([json]);
+          setData([json.data]);
         })
         .catch((error) => {
           console.error("Error fetching product:", error);
@@ -76,6 +77,7 @@ export default function SingleProduct() {
     }
     return title;
   };
+
   return (
     <div>
       {loading ? (
@@ -144,7 +146,7 @@ export default function SingleProduct() {
                         <div className="container mb-5">
                           <div className="bg-bgColor">
                             <Image
-                              src={el.image}
+                              src={`${BASE_URL_IMG}/${el.product_image}`}
                               width={150}
                               height={150}
                               alt="pic"
@@ -157,7 +159,7 @@ export default function SingleProduct() {
                           <div className="cursor-pointer">
                             <Image
                               className="demo  w-[128px]"
-                              src={el.image}
+                              src={`${BASE_URL_IMG}/${el.product_image}`}
                               width={150}
                               height={150}
                               alt="The Woods"
@@ -166,7 +168,7 @@ export default function SingleProduct() {
                           <div className="cursor-pointer">
                             <Image
                               className="demo  w-[128px]"
-                              src={el.image}
+                              src={`${BASE_URL_IMG}/${el.product_image}`}
                               width={150}
                               height={150}
                               alt="The Woods"
@@ -175,7 +177,7 @@ export default function SingleProduct() {
                           <div className="cursor-pointer">
                             <Image
                               className="demo  w-[128px]"
-                              src={el.image}
+                              src={`${BASE_URL_IMG}/${el.product_image}`}
                               width={150}
                               height={150}
                               alt="The Woods"
@@ -223,13 +225,15 @@ export default function SingleProduct() {
                       <ToastContainer />
                       Go to the ordering
                     </button>
-                    <button
-                      className="bg-mainColor p-2 text-white w-full mt-3 rounded-lg"
-                      // onClick={sendTelegram}
-                    >
-                      <ToastContainer />
-                      Order
-                    </button>
+                    <Link href="/payment" className="w-full">
+                      <button
+                        className="bg-mainColor p-2 text-white w-full mt-3 rounded-lg"
+                        // onClick={sendTelegram}
+                      >
+                        <ToastContainer />
+                        Payment
+                      </button>
+                    </Link>
                   </div>
                 </div>
 

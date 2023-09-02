@@ -13,6 +13,7 @@ import { BsPlusSquare } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import { CartContext } from "@/context/cartContext";
 import { LikeContext } from "@/context/likeContext";
+import { BASE_URL, BASE_URL_IMG } from "@/api/main";
 
 export default function Cart() {
   const { setCart }: any = useContext(CartContext);
@@ -99,9 +100,9 @@ export default function Cart() {
   useEffect(() => {
     const fetchData = async () => {
       const fetchPromises = cards.map((i: any) =>
-        fetch(`https://fakestoreapi.com/products/${i}`)
+        fetch(`${BASE_URL}/product/${i}`)
           .then((res) => res.json())
-          .then((json) => json)
+          .then((json) => json.data)
           .catch((err) => console.log(err))
       );
 
@@ -210,14 +211,16 @@ export default function Cart() {
                         <div className="bg-bgColor p-3 rounded-lg">
                           <Image
                             className="max-w-[100px] h-[108px]"
-                            src={el.image}
+                            src={`${BASE_URL_IMG}/${el.product_image}`}
                             width={100}
                             height={50}
                             alt="pic"
                           />
                         </div>
                         <div>
-                          <p className="max-w-[500px]">{renderTitle(el.title)}</p>
+                          <p className="max-w-[500px]">
+                            {renderTitle(el.title)}
+                          </p>
                           <p className="font-normal text-mainColor text-[18px] ">
                             {(counts[el.id] || 1) * el.price} so'm
                           </p>

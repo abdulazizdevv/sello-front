@@ -19,7 +19,7 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(true);
   const [data, setData] = useState<any[]>([]);
   useEffect(() => {
-    fetch(`https://fakestoreapi.com/products`)
+    fetch(`${BASE_URL}/product`)
       .then((res) => res.json())
       .then((json) => {
         setData(json);
@@ -123,7 +123,7 @@ export default function Home() {
             <Link href="/singleproduct">
               <Image
                 className="block w-[180px] h-[180px]"
-                src={el.image}
+                src={`${BASE_URL_IMG}/${el.product_image}`}
                 width={"183"}
                 height={"198"}
                 alt="card"
