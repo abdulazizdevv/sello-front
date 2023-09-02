@@ -4,8 +4,18 @@ import img1 from "../../../public/images/iPhone.png";
 import Loading from "../../../public/loading.svg";
 import Image from "next/image";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { AiOutlineExclamationCircle, AiOutlineHeart } from "react-icons/ai";
+import { BsTruck } from "react-icons/bs";
+import { PiTrash } from "react-icons/pi";
+import { LiaCubeSolid } from "react-icons/lia";
+import { ToastContainer, toast } from "react-toastify";
+import { IoMdClose } from "react-icons/io";
+import { CiSquareMinus, CiSquarePlus } from "react-icons/ci";
+import { BsPlusSquare } from "react-icons/bs";
+import { useRouter } from "next/navigation";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import Link from "next/link";
 type clickPrev = {
   clickHandler: any;
   hasPrev: any;
@@ -60,9 +70,14 @@ export default function SingleProduct() {
     });
   };
   // console.log(data);
-
+  const renderTitle = (title: string) => {
+    if (title.length > 15) {
+      return title.substring(0, 15) + "...";
+    }
+    return title;
+  };
   return (
-    <div className="container mx-auto p-5">
+    <div>
       {loading ? (
         <div className="text-center font-semibold text-[32px] h-screen">
           <Image
@@ -89,14 +104,31 @@ export default function SingleProduct() {
             <div>
               {data.map((el) => {
                 return (
-                  <h2 className="font-normal text-[28px] pb-5 max-w-[720px]">
-                    {el.title}
-                  </h2>
+                  <>
+                    <div className="bg-bgColor py-[12px]">
+                      <div className=" container mx-auto p-3 flex items-center ">
+                        <Link
+                          href="/"
+                          className="text-[16px] text-textColor font-normal"
+                        >
+                          Home |
+                        </Link>
+                        <p className="capitalize text-[16px] text-mainColor ms-2 font-normal">
+                          {renderTitle(el.title)}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="container mx-auto p-5">
+                      <h2 className="font-normal  text-[28px] pb-5 max-w-[850px]">
+                        {el.title}
+                      </h2>
+                    </div>
+                  </>
                 );
               })}
             </div>
-            <div className="flex flex-wrap ">
-              <div className="w-full md:max-w-[800px] me-8 relative">
+            <div className="flex container mx-auto p-5 flex-wrap lg:flex-nowrap gap-5">
+              <div className="w-full md:w-2/3 relative">
                 <Carousel
                   showArrows={true}
                   infiniteLoop={true}
@@ -167,50 +199,77 @@ export default function SingleProduct() {
                   <FiChevronRight color="white" size={25} />
                 </button>
               </div>
-              <div className="w-full md:w-1/3">
+              <div className="w-full lg:w-1/3">
                 <div className="border border-bgColor rounded-md p-5">
                   <p className="font-normal text-[16px] ">Order price</p>
-                  <div className="flex justify-between my-2 mt-5">
-                    <p className="font-normal text-textColor text-[12px]">
-                      Product count
-                    </p>
-                    <p className="font-normal text-[16px]">ssss</p>
+                  <div>
+                    {data.map((el) => {
+                      return (
+                        <>
+                          <p className="text-mainColor">{el.price} so'm</p>
+                          <div className="flex gap-2 mt-5">
+                            <p className="text-textColor">Brand:</p>
+                            <p>{renderTitle(el.title)}</p>
+                          </div>
+                        </>
+                      );
+                    })}
                   </div>
-                  <div className="flex justify-between my-2">
-                    <p className="font-normal text-textColor text-[12px]">
-                      Price
-                    </p>
-                    <p className="font-normal text-[16px]">3131 so'm</p>
+                  <div className="flex gap-3">
+                    <button
+                      className="bg-mainColor p-2 text-white w-full mt-3 rounded-lg"
+                      // onClick={sendTelegram}
+                    >
+                      <ToastContainer />
+                      Go to the ordering
+                    </button>
+                    <button
+                      className="bg-mainColor p-2 text-white w-full mt-3 rounded-lg"
+                      // onClick={sendTelegram}
+                    >
+                      <ToastContainer />
+                      Order
+                    </button>
                   </div>
-                  <div className="flex justify-between my-2">
-                    <p className="font-normal text-textColor text-[12px]">
-                      Discount
-                    </p>
-                    <p className="font-normal text-[red] text-[16px]">
-                      -56651 so'm
-                    </p>
+                </div>
+
+                <div className="border border-bgColor rounded-md p-5 mt-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex gap-2 items-center">
+                      <BsTruck color="#6f7977" />
+                      <p className="text-textColor text-[14px]">Delivery:</p>
+                    </div>
+                    <AiOutlineExclamationCircle style={{ color: "#6f7977" }} />
                   </div>
-                  <div className="flex justify-between my-2">
-                    <p className="font-normal text-textColor text-[12px]">
-                      Delivery
-                    </p>
-                    <p className="font-normal text-[16px]">{0} so'm</p>
+                  <p className="text-[14px]">
+                    Delivery start from 15 000 dollars across the city.
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex gap-2 items-center">
+                      <LiaCubeSolid size={20} color="#6f7977" />
+                      <p className="text-textColor text-[14px]">
+                        <span className="text-mainColor font-semibold me-2">
+                          Sello!
+                        </span>
+                        going to get through:
+                      </p>
+                    </div>
+                    <AiOutlineExclamationCircle style={{ color: "#6f7977" }} />
                   </div>
-                  <hr />
-                  <div className="flex justify-between mt-2">
-                    <p className="font-normal text-textColor text-[12px]">
-                      All price
-                    </p>
-                    <p className="font-normal text-[16px]">{6515} so'm</p>
-                  </div>
-                  {/* <button
-                    onClick={() => router.push("/checkout")}
-                    className="bg-mainColor p-3 text-white w-full mt-3 rounded-md"
-                    // onClick={sendTelegram}
-                  >
-                    <ToastContainer />
-                    Go to the ordering section
-                  </button> */}
+                  <p className="text-[14px]">You can take our branch</p>
+                </div>
+                <div className="border border-bgColor flex items-center justify-between bg-bgHelper rounded-md p-[16px] mt-3">
+                  <p>Delivery country: uzbekistan</p>
+                  <AiOutlineExclamationCircle style={{ color: "#6f7977" }} />
+                </div>
+                <div className="border border-bgColor bg-bgHelper rounded-md p-[16px] mt-3">
+                  <p className="text-textColor text-[14px]">
+                    1. Mahsulotlarni qaytarish:{" "}
+                    <span className="text-black">Yo'q</span>
+                  </p>
+                  <p className="text-textColor text-[14px]">
+                    2. Qadoqni ochish: <span className="text-black">Yo'q</span>
+                  </p>
                 </div>
               </div>
             </div>

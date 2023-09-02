@@ -1,7 +1,9 @@
 "use client";
+import { CartContext } from "@/context/cartContext";
+import { LikeContext } from "@/context/likeContext";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { SlClose } from "react-icons/sl";
 
 interface MapData {
@@ -14,6 +16,9 @@ interface MapData {
 }
 
 export default function Like() {
+  const { setLike }: any = useContext(LikeContext);
+  const { setCart }: any = useContext(CartContext);
+
   const [selectedProductIds, setSelectedProductIds] = useState<number[]>([]);
   const [selectedLikeIds, setSelectedLikeIds] = useState<number[]>([]);
   const [likes, setLikes] = useState<any>([]);
@@ -59,8 +64,28 @@ export default function Like() {
     }
     return title;
   };
-  const singleProduct = (evt: any) => {
-    localStorage.setItem("singleId", JSON.stringify(evt));
+  // const singleProduct = (evt: any) => {
+  //   localStorage.setItem("singleId", JSON.stringify(evt));
+  // };
+  const handleLikeClick = (id: number) => {
+    if (!selectedLikeIds.includes(id)) {
+      const updatedProductIds = [...selectedLikeIds, id];
+      setSelectedLikeIds(updatedProductIds);
+      localStorage.setItem(
+        "selectedLikeIds",
+        JSON.stringify(updatedProductIds)
+      );
+    }
+  };
+  const handleProductClick = (id: number) => {
+    if (!selectedProductIds.includes(id)) {
+      const updatedProductIds = [...selectedProductIds, id];
+      setSelectedProductIds(updatedProductIds);
+      localStorage.setItem(
+        "selectedProductIds",
+        JSON.stringify(updatedProductIds)
+      );
+    }
   };
 
   let allCartId;
@@ -76,34 +101,17 @@ export default function Like() {
       }
     }
     localStorage.setItem("cartId", JSON.stringify(allCartId));
+    setCart(allCartId);
   };
 
   const deleteLike = (id: number) => {
     const updatedLikes = likes.filter((likeId: number) => likeId !== id);
     setLikes(updatedLikes);
+    setLike(updatedLikes);
     localStorage.setItem("likeId", JSON.stringify(updatedLikes));
     localStorage.setItem("selectedLikeIds", JSON.stringify(updatedLikes));
   };
-  const handleProductClick = (id: number) => {
-    if (!selectedProductIds.includes(id)) {
-      const updatedProductIds = [...selectedProductIds, id];
-      setSelectedProductIds(updatedProductIds);
-      localStorage.setItem(
-        "selectedProductIds",
-        JSON.stringify(updatedProductIds)
-      );
-    }
-  };
-  const handleLikeClick = (id: number) => {
-    if (!selectedLikeIds.includes(id)) {
-      const updatedProductIds = [...selectedLikeIds, id];
-      setSelectedLikeIds(updatedProductIds);
-      localStorage.setItem(
-        "selectedLikeIds",
-        JSON.stringify(updatedProductIds)
-      );
-    }
-  };
+
   return (
     <div className="container mx-auto p-5">
       <div>
@@ -129,7 +137,7 @@ export default function Like() {
                           className={`p-2 rounded-md `}
                           onClick={() => {
                             deleteLike(el.id);
-                            // handleLikeClick(el.id);
+                            handleLikeClick(el.id);
                           }}
                         >
                           <SlClose size={25} color={"white"} />
@@ -153,10 +161,14 @@ export default function Like() {
                     </Link>
                     <div className="flex mt-5 sm:justify-between gap-2">
                       <button
-                        className={`w-full justify-center  sm:px-[8px] p-[8px] sm:py-1 text-[14px] rounded-md flex items-center gap-3 bg-mainColor text-white`}
+                        className={`p-1  rounded-md w-full text-center flex justify-center text-[14px] items-center gap-3 ${
+                          selectedProductIds.includes(el.id)
+                            ? "text-black bg-white border border-mainColor "
+                            : "bg-mainColor text-white"
+                        }`}
                         onClick={() => {
-                          // addToCart(el.id);
-                          // handleProductClick(el.id);
+                          addToCart(el.id);
+                          handleProductClick(el.id);
                         }}
                       >
                         Add to Card

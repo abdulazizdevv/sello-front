@@ -1,13 +1,21 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AiOutlineHeart, AiOutlineShoppingCart } from "react-icons/ai";
 import Loading from "../../public/loading.svg";
 import Banner from "@/layout/Banner/Banner";
 import { BASE_URL, BASE_URL_IMG } from "@/api/main";
+import { CartContext } from "@/context/cartContext";
+import { LikeContext } from "@/context/likeContext";
 
 export default function Home() {
+  const { setCart }: any = useContext(CartContext);
+  const { setLike }: any = useContext(LikeContext);
+
+  const [selectedProductIds, setSelectedProductIds] = useState<number[]>([]);
+  const [selectedLikeIds, setSelectedLikeIds] = useState<number[]>([]);
+
   const [loading, setLoading] = useState<boolean>(true);
   const [data, setData] = useState<any[]>([]);
   useEffect(() => {
@@ -24,22 +32,68 @@ export default function Home() {
     }
     return title;
   };
-  // let allSingleId;
+  let allCartId: any;
+  let allLikeId: any;
 
-  // const addToSingleId = (evt: any) => {
-  //   let getCartId: any = localStorage.getItem("cartId");
-  //   if (!getCartId) {
-  //     allSingleId = [evt];
-  //   } else {
-  //     allSingleId = JSON.parse(getCartId);
-  //     if (!allSingleId.includes(evt)) {
-  //       allSingleId.push(evt);
-  //     }
-  //   }
-  //   localStorage.setItem("cartId", JSON.stringify(allSingleId));
-  // };
+  const addToCart = (evt: any) => {
+    let getCartId: any = localStorage.getItem("cartId");
+    if (!getCartId) {
+      allCartId = [evt];
+    } else {
+      allCartId = JSON.parse(getCartId);
+      if (!allCartId.includes(evt)) {
+        allCartId.push(evt);
+      }
+    }
+    setCart(allCartId);
+    localStorage.setItem("cartId", JSON.stringify(allCartId));
+  };
+  const addToLike = (evt: any) => {
+    let getCartId: any = localStorage.getItem("likeId");
+    if (!getCartId) {
+      allLikeId = [evt];
+    } else {
+      allLikeId = JSON.parse(getCartId);
+      if (!allLikeId.includes(evt)) {
+        allLikeId.push(evt);
+      }
+    }
+    setLike(allLikeId);
+    localStorage.setItem("likeId", JSON.stringify(allLikeId));
+  };
+  useEffect(() => {
+    const storedProductIds = JSON.parse(
+      localStorage.getItem("selectedProductIds") || "[]"
+    );
+    setSelectedProductIds(storedProductIds);
+
+    const storeLikeIds = JSON.parse(
+      localStorage.getItem("selectedLikeIds") || "[]"
+    );
+    setSelectedLikeIds(storeLikeIds);
+  }, []);
+  const handleProductClick = (id: number) => {
+    if (!selectedProductIds.includes(id)) {
+      const updatedProductIds = [...selectedProductIds, id];
+      setSelectedProductIds(updatedProductIds);
+      localStorage.setItem(
+        "selectedProductIds",
+        JSON.stringify(updatedProductIds)
+      );
+    }
+  };
+  const handleLikeClick = (id: number) => {
+    if (!selectedLikeIds.includes(id)) {
+      const updatedProductIds = [...selectedLikeIds, id];
+      setSelectedLikeIds(updatedProductIds);
+      localStorage.setItem(
+        "selectedLikeIds",
+        JSON.stringify(updatedProductIds)
+      );
+    }
+  };
+
   const jewelerys = data.map((el: any) => {
-    // const
     // const isSelected = selectedProductIds.includes(el.id);
     // const isSelectedLike = selectedLikeIds.includes(el.id);
     return (
@@ -54,11 +108,16 @@ export default function Home() {
               <button
                 className={`p-2 rounded-md `}
                 onClick={() => {
-                  // addLike(el.id);
-                  // handleLikeClick(el.id);
+                  addToLike(el.id);
+                  handleLikeClick(el.id);
                 }}
               >
-                <AiOutlineHeart size={25} color={"white"} />
+                <AiOutlineHeart
+                  size={25}
+                  color={`${
+                    selectedLikeIds.includes(el.id) ? "#00B3A8" : "white"
+                  }`}
+                />
               </button>
             </div>
             <Link href="/singleproduct">
@@ -79,10 +138,14 @@ export default function Home() {
           </Link>
           <div className="flex mt-5 sm:justify-between gap-2">
             <button
-              className={`w-full justify-center  sm:px-[8px] p-[8px] sm:py-1 text-[14px] rounded-md flex items-center gap-3 bg-mainColor text-white`}
+              className={`p-1  rounded-md w-full text-center flex justify-center text-[14px] items-center gap-3 ${
+                selectedProductIds.includes(el.id)
+                  ? "text-black bg-white border border-mainColor "
+                  : "bg-mainColor text-white"
+              }`}
               onClick={() => {
-                // addToCart(el.id);
-                // handleProductClick(el.id);
+                addToCart(el.id);
+                handleProductClick(el.id);
               }}
             >
               Add to Card

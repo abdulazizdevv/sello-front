@@ -1,19 +1,22 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AiOutlineExclamationCircle, AiOutlineHeart } from "react-icons/ai";
 import { BsTruck } from "react-icons/bs";
 import { PiTrash } from "react-icons/pi";
 import { LiaCubeSolid } from "react-icons/lia";
-// import { sendTelegramMessage } from "./api/message";
 import { ToastContainer, toast } from "react-toastify";
 import { IoMdClose } from "react-icons/io";
 import { CiSquareMinus, CiSquarePlus } from "react-icons/ci";
 import { BsPlusSquare } from "react-icons/bs";
 import { useRouter } from "next/navigation";
+import { CartContext } from "@/context/cartContext";
+import { LikeContext } from "@/context/likeContext";
 
 export default function Cart() {
+  const { setCart }: any = useContext(CartContext);
+  const { setLike }: any = useContext(LikeContext);
   const [cards, setCards] = useState<any>([]);
   const [selectedProductIds, setSelectedProductIds] = useState<number[]>([]);
   const [selectedLikeIds, setSelectedLikeIds] = useState<number[]>([]);
@@ -47,7 +50,6 @@ export default function Cart() {
     const storeLikeIds = JSON.parse(
       localStorage.getItem("selectedLikeIds") || "[]"
     );
-    console.log(storeLikeIds);
 
     setSelectedLikeIds(storeLikeIds);
   }, []);
@@ -91,6 +93,7 @@ export default function Cart() {
       }
     }
     localStorage.setItem("likeId", JSON.stringify(allLikeId));
+    setLike(allLikeId);
   };
 
   useEffect(() => {
@@ -121,15 +124,23 @@ export default function Cart() {
     if (cards.length > 0) {
       fetchData();
     }
-  }, [cards]);
-
+  }, [cards.length]);
+  const renderTitle = (title: string) => {
+    if (title.length > 32) {
+      return title.substring(0, 32) + "...";
+    }
+    return title;
+  };
   const deleteCart = (id: number) => {
     const updatedCards = cards.filter((cartId: number) => cartId !== id);
     setCards(updatedCards);
+    setCart(updatedCards);
     localStorage.setItem("cartId", JSON.stringify(updatedCards));
     localStorage.setItem("selectedProductIds", JSON.stringify(updatedCards));
   };
-
+  const removeCartId = () => {
+    localStorage.removeItem("cartId");
+  };
   const sendTelegram = () => {
     const botToken = "6633867633:AAFc8HNujHnb36ISPc5XfzXO9O3rjfT8ew4";
     const chatId = "-1001848608431";
@@ -177,10 +188,13 @@ export default function Cart() {
                         <input type="checkbox" className="w-[20px] h-[20px] " />
                         <p className="text-mainColor">Select all</p>
                       </div>
-                      <p className="text-[red] flex items-center ">
+                      <button
+                        onClick={removeCartId}
+                        className="text-[red] flex items-center "
+                      >
                         <IoMdClose color={"red"} size={20} />
                         {1} delete
-                      </p>
+                      </button>
                     </div>
                     <p className="text-textColor ">{count} product</p>
                   </div>
@@ -203,19 +217,23 @@ export default function Cart() {
                           />
                         </div>
                         <div>
-                          <p className="max-w-[500px]">{el.title}</p>
+                          <p className="max-w-[500px]">{renderTitle(el.title)}</p>
                           <p className="font-normal text-mainColor text-[18px] ">
                             {(counts[el.id] || 1) * el.price} so'm
                           </p>
                           <p className="text-textColor text-[14px]">
-                            The country of delivery:{" "}
+                            The country of delivery:
                             <span className="text-black text-[16px]">
                               Uzbekistan
                             </span>
                           </p>
-                          <div className="flex mt-3 justify-between">
+                          <div className="flex mt-3 gap-5">
                             <button
-                              className="flex gap-1 items-center"
+                              className={`flex gap-1 items-center ${
+                                selectedLikeIds.includes(el.id)
+                                  ? "text-mainColor"
+                                  : "text-textColor"
+                              }`}
                               onClick={() => {
                                 addLike(el.id);
                               }}

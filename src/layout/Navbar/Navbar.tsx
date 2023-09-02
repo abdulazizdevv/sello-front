@@ -16,13 +16,18 @@ import Image from "next/image";
 import Link from "next/link";
 
 import Logo from "../../../public/icons/logo.svg";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Categories from "@/app/product";
 import { CiMenuKebab } from "react-icons/ci";
 import { usePathname } from "next/navigation";
 import { Modal } from "@/widgets/Modal/Modal";
+import { CartContext } from "@/context/cartContext";
+import { LikeContext } from "@/context/likeContext";
+import { ProfileModal } from "@/widgets/Modal/ProfileModal";
 
 function Navbar() {
+  const { cart }: any = useContext(CartContext);
+  const { like }: any = useContext(LikeContext);
   const pathname = usePathname();
 
   const [hovered, setHovered] = useState(false);
@@ -31,20 +36,12 @@ function Navbar() {
   const [hovered3, setHovered3] = useState(false);
   const [hovered4, setHovered4] = useState(false);
   const [data, setData] = useState([]);
-  const [cartId, setCartId] = useState([]);
   const [likeId, setLikeId] = useState([]);
   const [countLike, setCountLikeId] = useState(0);
-  const [countCart, setCountCartId] = useState(0);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [loginModal, setLoginModal] = useState(false);
-
-  useEffect(() => {
-    let cartIds: any = localStorage.getItem("cartId");
-    if (cartIds) {
-      setCartId(JSON.parse(cartIds));
-    }
-  }, []);
+  const [loginProfileModal, setLoginProfileModal] = useState(false);
 
   useEffect(() => {
     let likeIds: any = localStorage.getItem("likeId");
@@ -55,8 +52,7 @@ function Navbar() {
 
   useEffect(() => {
     setCountLikeId(likeId?.length);
-    setCountCartId(cartId?.length);
-  }, [cartId, likeId]);
+  }, [likeId]);
 
   useEffect(() => {
     fetch("https://fakestoreapi.com/products")
@@ -75,23 +71,31 @@ function Navbar() {
     setShowSuggestions(true);
   };
 
+  // console.log(cart.length);
+
   const handleSubmit = (evt: any) => {
     evt.preventDefault();
-    fetch("https://fakestoreapi.com/auth/login", {
+    console.log(evt.target[0].value);
+    console.log(evt.target[1].value);
+    console.log(evt.target[2].value);
+
+    fetch("http://10.10.1.25:3001/api/auth/register", {
       method: "POST",
       headers: {
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        username: evt.target[0].value,
+      
+        email: evt.target[0].value,
         password: evt.target[1].value,
+        phone_number: evt.target[2].value,
       }),
     })
       .then((res) => res.json())
       .then((json) => {
+        console.log(json);
+
         if (json) {
-          localStorage.setItem("token", json.token);
-          location.reload();
           toast.success("Successfully!", {
             position: toast.POSITION.TOP_RIGHT,
           });
@@ -110,10 +114,6 @@ function Navbar() {
   const singleProduct = (evt: any) => {
     localStorage.setItem("singleId", JSON.stringify(evt));
   };
-
-  // const toggleOffcanvas = () => {
-  //   setIsOpen(!isOpen);
-  // };
 
   return (
     <div>
@@ -147,7 +147,7 @@ function Navbar() {
                 <AiOutlineSearch size={25} color={"#fff"} />
               </button>
             </div>
-            <ul className=" absolute z-10 rounded-md py-2 bg-white px-3">
+            <ul className=" absolute z-[1] rounded-md py-2 bg-white px-3">
               {showSuggestions &&
                 searchResults.map((product: any) => (
                   <li
@@ -172,7 +172,7 @@ function Navbar() {
             <Link href="/like">
               <button className="flex relative flex-col items-center">
                 <p className="absolute right-[5px] top-[-12px] text-[14px] bg-[orange] rounded-[50%] px-[8px] text-white">
-                  {countLike}
+                  {like ? like.length : 0}
                 </p>
                 <AiOutlineHeart color="#00B3A8" size={24} />
                 <p className="text-textColor">Favorites</p>
@@ -181,22 +181,22 @@ function Navbar() {
             <Link href="/cart">
               <button className="flex relative flex-col items-center">
                 <p className="absolute right-[-14px] top-[-14px] text-[14px] bg-[red] rounded-[50%] px-[7px] text-white">
-                  {countCart}
+                  {cart ? cart.length : 0}
                 </p>
                 <AiOutlineShoppingCart color="#00B3A8" size={24} />
                 <p className="text-textColor">Cart</p>
               </button>
             </Link>
             <div className="dropdown">
-              <Link href="/profile">
-                <button
-                  className="flex flex-col items-center "
-                  onClick={() => setLoginModal(true)}
-                >
-                  <FaRegUser color="#00B3A8" size={24} />
-                  <p className="text-textColor">Profile</p>
-                </button>
-              </Link>
+              {/* <Link href="/profile"> */}
+              <button
+                className="flex flex-col items-center "
+                onClick={() => setLoginProfileModal(true)}
+              >
+                <FaRegUser color="#00B3A8" size={24} />
+                <p className="text-textColor">Profile</p>
+              </button>
+              {/* </Link> */}
               <div className="dropdown-content">{/* <Dropdown /> */}</div>
             </div>
           </div>
@@ -280,6 +280,59 @@ function Navbar() {
           <Categories />
         </div>
       </div>
+      <ProfileModal
+        width={"480px"}
+        title={"Login"}
+        modal={loginProfileModal}
+        setModal={setLoginProfileModal}
+      >
+        <div className=" md:p-5 ">
+          <form
+            className="flex flex-col items-center gap-3 justify-center"
+            onSubmit={handleSubmit}
+          >
+            <div className="flex flex-col gap-2">
+              <label htmlFor="email">Email</label>
+              <input
+                className="w-full p-2 rounded-md outline-none border border-textColor"
+                placeholder="Email"
+                type="text"
+                name="email"
+                id="email"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="password">Password</label>
+              <input
+                className="w-full p-2 rounded-md outline-none border border-textColor"
+                placeholder="*****"
+                type="password"
+                name="password"
+                id="phone"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="phoneNumber">Phone Number</label>
+              <input
+                className="w-full p-2 rounded-md outline-none border border-textColor"
+                placeholder="Phone number"
+                type="tel"
+                name="phoneNumber"
+                id="phone"
+              />
+            </div>
+            <div>
+              <button
+                type="submit"
+                className="bg-mainColor p-3 mt-3 text-white w-[200px]"
+              >
+                <ToastContainer />
+                Log In
+              </button>
+            </div>
+          </form>
+        </div>
+      </ProfileModal>
       <Modal modal={loginModal} setModal={setLoginModal}>
         {/* <div className=" md:p-5 "></div> */}
       </Modal>

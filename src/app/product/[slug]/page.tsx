@@ -4,10 +4,12 @@ import { Metadata, ResolvingMetadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Loading from "../../../../public/loading.svg";
 import { AiOutlineHeart, AiOutlineShoppingCart } from "react-icons/ai";
 import "./main.css";
+import { LikeContext } from "@/context/likeContext";
+import { CartContext } from "@/context/cartContext";
 export async function getStaticPaths() {
   const paths = await getPostIdList();
   return {
@@ -67,9 +69,11 @@ const mainData = [
 ];
 
 export default function Page({ params }: any) {
+  const { like, setLike }: any = useContext(LikeContext);
+  const { cart, setCart }: any = useContext(CartContext);
   const [selectedProductIds, setSelectedProductIds] = useState<number[]>([]);
   const [selectedLikeIds, setSelectedLikeIds] = useState<number[]>([]);
-  const [max, setMax] = useState(100);
+  const [max, setMax] = useState<number>(0);
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
@@ -90,7 +94,6 @@ export default function Page({ params }: any) {
   const handleRangeChange = (value: any) => {
     setMax(value.target.value);
   };
-  const handleRangeChangeMin = (value: any) => {};
 
   useEffect(() => {
     const storedProductIds = JSON.parse(
@@ -121,6 +124,7 @@ export default function Page({ params }: any) {
         allCartId.push(evt);
       }
     }
+    setCart(allCartId);
     localStorage.setItem("cartId", JSON.stringify(allCartId));
   };
 
@@ -134,6 +138,7 @@ export default function Page({ params }: any) {
         allLikeId.push(evt);
       }
     }
+    setLike(allLikeId);
     localStorage.setItem("likeId", JSON.stringify(allLikeId));
   };
   const handleProductClick = (id: number) => {
@@ -168,11 +173,16 @@ export default function Page({ params }: any) {
               <button
                 className={`p-2 rounded-md `}
                 onClick={() => {
-                  // addLike(el.id);
-                  // handleLikeClick(el.id);
+                  addLike(el.id);
+                  handleLikeClick(el.id);
                 }}
               >
-                <AiOutlineHeart size={25} color={"white"} />
+                <AiOutlineHeart
+                  size={25}
+                  color={`${
+                    selectedLikeIds.includes(el.id) ? "#00B3A8" : "white"
+                  }`}
+                />
               </button>
             </div>
             <Link href="/singleproduct">
@@ -193,10 +203,14 @@ export default function Page({ params }: any) {
           </Link>
           <div className="flex mt-5 sm:justify-between gap-2">
             <button
-              className={`w-full justify-center  sm:px-[8px] p-[8px] sm:py-1 text-[14px] rounded-md flex items-center gap-3 bg-mainColor text-white`}
+              className={`p-1  rounded-md w-full text-center flex justify-center text-[14px] items-center gap-3 ${
+                selectedProductIds.includes(el.id)
+                  ? "text-black bg-white border border-mainColor "
+                  : "bg-mainColor text-white"
+              }`}
               onClick={() => {
-                // addToCart(el.id);
-                // handleProductClick(el.id);
+                addToCart(el.id);
+                handleProductClick(el.id);
               }}
             >
               Add to Card
@@ -255,7 +269,7 @@ export default function Page({ params }: any) {
                   <input
                     type="number"
                     placeholder="30 000 000"
-                    defaultValue={max}
+                    value={max}
                     className="border w-full p-2 focus:border-blue-400 outline-none border-textColor rounded-md"
                   />
 
@@ -267,7 +281,7 @@ export default function Page({ params }: any) {
                       defaultValue={0}
                       max={30000000}
                       value={max}
-                      onChange={handleRangeChange}
+                      onChange={(value) => handleRangeChange(value)}
                     />
                   </div>
                 </div>
