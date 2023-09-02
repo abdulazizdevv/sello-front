@@ -78,6 +78,7 @@ export default function Page({ params }: any) {
   const [data, setData] = useState<any[]>([]);
   const [brand, setBrand] = useState<any[]>([]);
   const [subcategories, setSubcategories] = useState<any[]>([]);
+  const [Categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -99,12 +100,12 @@ export default function Page({ params }: any) {
         setSubcategories(json.data.subcategories);
         setLoading(false);
       });
-    // fetch(`${BASE_URL}/catalog/${params.slug}`)
-    //   .then((res) => res.json())
-    //   .then((json) => {
-    //     setSubcategories(json.data.subcategories);
-    //     setLoading(false);
-    //   });
+    fetch(`${BASE_URL}/catalog/${params.slug}`)
+      .then((res) => res.json())
+      .then((json) => {
+        setCategories(json.data.categories);
+        setLoading(false);
+      });
   }, []);
   const renderTitle = (title: string) => {
     if (title.length > 40) {
@@ -185,6 +186,16 @@ export default function Page({ params }: any) {
   };
   const handleBrand = (evt: any) => {
     fetch(`${BASE_URL}/brand/${evt}`)
+      .then((res) => res.json())
+      .then((json) => {
+        setData(json.data.products);
+        setLoading(false);
+      });
+  };
+  const handleSub = (evt: any) => {
+    const res = +evt.target.value;
+
+    fetch(`${BASE_URL}/category/${res}`)
       .then((res) => res.json())
       .then((json) => {
         setData(json.data.products);
@@ -405,11 +416,16 @@ export default function Page({ params }: any) {
                   <select
                     name="filter"
                     className="outline-none rounded-md p-3 w-[200px] px-5 py-2 max-w-[268px]"
+                    onChange={handleSub}
                   >
                     <option value="discount">Subcategory</option>
-                    <option value="discount">discount</option>
-                    <option value="discount">discount</option>
-                    <option value="discount">discount</option>
+                    {Categories.map((el) => {
+                      return (
+                        <>
+                          <option value={`${el.id}`}>{el.category_name}</option>
+                        </>
+                      );
+                    })}
                   </select>
                 </div>
                 <div className=" flex flex-wrap ">{categories}</div>

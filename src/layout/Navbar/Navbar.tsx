@@ -37,7 +37,7 @@ function Navbar() {
   const [hovered2, setHovered2] = useState(false);
   const [hovered3, setHovered3] = useState(false);
   const [hovered4, setHovered4] = useState(false);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any[]>([]);
   const [likeId, setLikeId] = useState([]);
   const [countLike, setCountLikeId] = useState(0);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -61,7 +61,7 @@ function Navbar() {
     fetch(`${BASE_URL}/product`)
       .then((res) => res.json())
       .then((json) => {
-        setData(json.data.products);
+        setData(json);
       });
   }, []);
 
@@ -70,6 +70,7 @@ function Navbar() {
     const results: any = data.filter((product: any) =>
       product.title.toLowerCase().includes(value.toLowerCase())
     );
+
     setSearchResults(results);
     setShowSuggestions(true);
   };
@@ -180,19 +181,21 @@ function Navbar() {
                 <AiOutlineSearch size={25} color={"#fff"} />
               </button>
             </div>
-            <ul className=" absolute z-[1] rounded-md py-2 bg-white px-3">
+            <ul className=" absolute z-[1] w-[350px] p-5 left-[30%] rounded-md py-2 bg-white px-3">
               {showSuggestions &&
                 searchResults.map((product: any) => (
-                  <li
-                    key={product.id}
-                    className="cursor-pointer hover:bg-slate-100"
-                    onClick={() => {
-                      singleProduct(product.id);
-                      handleClose();
-                    }}
-                  >
-                    <Link href="/singleproduct">{product.title}</Link>
-                  </li>
+                  <Link href="/singleproduct">
+                    <li
+                      key={product.id}
+                      className="cursor-pointer hover:bg-slate-100"
+                      onClick={() => {
+                        singleProduct(product.id);
+                        handleClose();
+                      }}
+                    >
+                      {product.title}
+                    </li>
+                  </Link>
                 ))}
             </ul>
           </div>
