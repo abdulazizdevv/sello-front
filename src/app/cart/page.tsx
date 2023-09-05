@@ -142,22 +142,7 @@ export default function Cart() {
   const removeCartId = () => {
     localStorage.removeItem("cartId");
   };
-  const sendTelegram = () => {
-    const botToken = "6633867633:AAFc8HNujHnb36ISPc5XfzXO9O3rjfT8ew4";
-    const chatId = "-1001848608431";
-    const message = `Username: Ali\nProduct title: ${title},\nCount: ${count},\nPrice: ${price}$.`;
-    // sendTelegramMessage({ botToken, chatId, message })
-    // .then((success) => {
-    //   if (success) {
-    //     toast.success("Successfully Checkout");
-    //   } else {
-    //     toast.error("Empty");
-    //   }
-    // })
-    // .catch((error) => {
-    //   console.error("Error:", error);
-    // });
-  };
+ 
 
   return (
     <div>
@@ -222,7 +207,10 @@ export default function Cart() {
                             {renderTitle(el.title)}
                           </p>
                           <p className="font-normal text-mainColor text-[18px] ">
-                            {(counts[el.id] || 1) * el.price} so'm
+                            {counts[el.id]
+                              ? counts[el.id] * el.price
+                              : el.price}
+                            so'm
                           </p>
                           <p className="text-textColor text-[14px]">
                             The country of delivery:

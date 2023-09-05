@@ -10,7 +10,7 @@ import { PiCameraRotate } from "react-icons/pi";
 import { AiOutlineHeart } from "react-icons/ai";
 import { FaRegUser } from "react-icons/fa";
 import { FaBars } from "react-icons/fa";
-import { GrCart } from "react-icons/gr";
+import { GrCart, GrClose } from "react-icons/gr";
 import { LuHome } from "react-icons/lu";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,6 +26,8 @@ import { LikeContext } from "@/context/likeContext";
 import { ProfileModal } from "@/widgets/Modal/ProfileModal";
 import { VerifyModal } from "@/widgets/Modal/VerifyModal";
 import { BASE_URL } from "@/api/main";
+import { IoMdClose } from "react-icons/io";
+import { ResponsiveModal } from "@/widgets/Modal/ResponsiveModal";
 
 function Navbar() {
   const { cart }: any = useContext(CartContext);
@@ -45,6 +47,7 @@ function Navbar() {
   const [loginModal, setLoginModal] = useState(false);
   const [loginProfileModal, setLoginProfileModal] = useState(false);
   const [verifyModal, setVerifyModal] = useState(false);
+  const [responsiveModal, setResponsiveModal] = useState(false);
 
   useEffect(() => {
     let likeIds: any = localStorage.getItem("likeId");
@@ -141,14 +144,11 @@ function Navbar() {
       })
       .catch((err) => console.log(err.message));
   };
-  const handleClose = () => {
-    setShowSuggestions(false);
-  };
 
   const singleProduct = (evt: any) => {
     localStorage.setItem("singleId", JSON.stringify(evt));
   };
-
+  const handleClick = () => {};
   return (
     <div>
       <div className="relative">
@@ -160,9 +160,13 @@ function Navbar() {
             <div className="lg:flex hidden  items-center ">
               <button
                 onClick={() => setLoginModal(true)}
-                className="flex me-5 gap-2 border border-[bgColor] rounded-md px-[6px] py-[7px] items-center text-[16px]"
+                className="flex me-5 gap-2 border border-[bgColor] cursor-pointer rounded-md px-[6px] py-[7px] items-center text-[16px]"
               >
-                <AiOutlineBars color={"#00B3A8"} size={24} />
+                {loginModal ? (
+                  <IoMdClose color={"#00B3A8"} size={24} />
+                ) : (
+                  <AiOutlineBars color={"#00B3A8"} size={24} />
+                )}
                 Catalog
               </button>
               <div className="w-full lg:flex hidden justify-between gap-3 items-center bg-white border border-[#eff1f0] rounded-l-md">
@@ -181,7 +185,7 @@ function Navbar() {
                 <AiOutlineSearch size={25} color={"#fff"} />
               </button>
             </div>
-            <ul className=" absolute z-[1] w-[350px] p-5 left-[30%] rounded-md py-2 bg-white px-3">
+            <ul className=" absolute z-[1] hidden sm:block w-[350px] p-5 left-[30%] rounded-md py-2 bg-white px-3">
               {showSuggestions &&
                 searchResults.map((product: any) => (
                   <Link href="/singleproduct">
@@ -190,7 +194,7 @@ function Navbar() {
                       className="cursor-pointer hover:bg-slate-100"
                       onClick={() => {
                         singleProduct(product.id);
-                        handleClose();
+                        // handleClose();
                       }}
                     >
                       {product.title}
@@ -200,7 +204,7 @@ function Navbar() {
             </ul>
           </div>
           <div className="flex lg:hidden">
-            <button>
+            <button onClick={() => setResponsiveModal(true)}>
               <AiOutlineBars size={24} color="#0FB7AD" />
             </button>
           </div>
@@ -224,7 +228,6 @@ function Navbar() {
               </button>
             </Link>
             <div className="dropdown">
-              {/* <Link href="/profile"> */}
               <button
                 className="flex flex-col items-center "
                 onClick={() => setLoginProfileModal(true)}
@@ -232,11 +235,12 @@ function Navbar() {
                 <FaRegUser color="#00B3A8" size={24} />
                 <p className="text-textColor">Profile</p>
               </button>
-              {/* </Link> */}
               <div className="dropdown-content">{/* <Dropdown /> */}</div>
             </div>
           </div>
-          <div className="flex lg:hidden justify-between container p-5 mx-auto bottom-0 fixed z-10 bg-white">
+        </div>
+        <div className=" bg-white fixed z-[9999] bottom-0 w-full">
+          <div className="flex lg:hidden container p-5 mx-auto justify-between">
             <Link href="/">
               <button
                 onMouseEnter={() => setHovered(true)}
@@ -269,8 +273,11 @@ function Navbar() {
               <button
                 onMouseEnter={() => setHovered2(true)}
                 onMouseLeave={() => setHovered2(false)}
-                className="flex hover:text-mainColor flex-col items-center"
+                className="flex hover:text-mainColor relative flex-col items-center"
               >
+                <p className="absolute right-[-14px] top-[-14px] text-[14px] bg-[red] rounded-[50%] px-[7px] text-white">
+                  {cart ? cart.length : 0}
+                </p>
                 <AiOutlineShoppingCart
                   size={24}
                   color={
@@ -286,8 +293,11 @@ function Navbar() {
               <button
                 onMouseEnter={() => setHovered3(true)}
                 onMouseLeave={() => setHovered3(false)}
-                className="flex hover:text-mainColor flex-col items-center"
+                className="flex hover:text-mainColor relative flex-col items-center"
               >
+                <p className="absolute left-[26px] top-[-14px] text-[14px] bg-[orange] rounded-[50%] px-[8px] text-white">
+                  {like ? like.length : 0}
+                </p>
                 <AiOutlineHeart
                   size={24}
                   color={
@@ -402,6 +412,10 @@ function Navbar() {
           </form>
         </div>
       </VerifyModal>
+      <ResponsiveModal
+        modal={responsiveModal}
+        setModal={setResponsiveModal}
+      ></ResponsiveModal>
       <Modal modal={loginModal} setModal={setLoginModal}></Modal>
     </div>
   );

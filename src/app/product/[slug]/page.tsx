@@ -1,9 +1,7 @@
 "use client";
-import { getPostDetails, getPostIdList } from "@/shared/post";
-import { Metadata, ResolvingMetadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useEffect, useState, useContext } from "react";
 import Loading from "../../../../public/loading.svg";
 import { AiOutlineHeart, AiOutlineShoppingCart } from "react-icons/ai";
@@ -11,12 +9,6 @@ import "./main.css";
 import { LikeContext } from "@/context/likeContext";
 import { CartContext } from "@/context/cartContext";
 import { BASE_URL, BASE_URL_IMG } from "@/api/main";
-export async function getStaticPaths() {
-  const paths = await getPostIdList();
-  return {
-    paths,
-  };
-}
 
 const mainData = [
   {
@@ -70,6 +62,8 @@ const mainData = [
 ];
 
 export default function Page({ params }: any) {
+  const router = useRouter();
+
   const { like, setLike }: any = useContext(LikeContext);
   const { cart, setCart }: any = useContext(CartContext);
   const [selectedProductIds, setSelectedProductIds] = useState<number[]>([]);
@@ -77,6 +71,7 @@ export default function Page({ params }: any) {
   const [max, setMax] = useState<number>(0);
   const [data, setData] = useState<any[]>([]);
   const [brand, setBrand] = useState<any[]>([]);
+  const [catalog, setCatalog] = useState<any[]>([]);
   const [subcategories, setSubcategories] = useState<any[]>([]);
   const [Categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -92,6 +87,12 @@ export default function Page({ params }: any) {
       .then((res) => res.json())
       .then((json) => {
         setBrand(json.data.brands);
+        setLoading(false);
+      });
+    fetch(`${BASE_URL}/catalog`)
+      .then((res) => res.json())
+      .then((json) => {
+        setCatalog(json.data);
         setLoading(false);
       });
     fetch(`${BASE_URL}/catalog/${params.slug}`)
@@ -193,15 +194,36 @@ export default function Page({ params }: any) {
       });
   };
   const handleSub = (evt: any) => {
-    const res = +evt.target.value;
+    const res = evt.target.value;
 
-    fetch(`${BASE_URL}/category/${res}`)
-      .then((res) => res.json())
-      .then((json) => {
-        setData(json.data.products);
-        setLoading(false);
-      });
+    if (res !== "all") {
+      fetch(`${BASE_URL}/category/${+res}`)
+        .then((res) => res.json())
+        .then((json) => {
+          setData(json.data.products);
+          setLoading(false);
+        });
+    } else {
+      fetch(`${BASE_URL}/catalog/${params.slug}`)
+        .then((res) => res.json())
+        .then((json) => {
+          setData(json.data.products);
+          setLoading(false);
+        });
+    }
   };
+  const handleCatalog = (evt: any) => {
+    const res = evt.target.value;
+    console.log(res);
+    router.push(`/product/${res}`);
+    // fetch(`${BASE_URL}/catalog/${+res}`)
+    //   .then((res) => res.json())
+    //   .then((json) => {
+    //     setData(json.data);
+    //     setLoading(false);
+    //   });
+  };
+  // console.log(data);
 
   const categories = data.map((el: any) => {
     return (
@@ -407,18 +429,23 @@ export default function Page({ params }: any) {
                   <select
                     name="filter"
                     className="outline-none rounded-md p-3 w-[200px] px-5 py-2 max-w-[268px]"
+                    onChange={handleCatalog}
                   >
-                    <option value="discount">Electronic</option>
-                    <option value="discount">discount</option>
-                    <option value="discount">discount</option>
-                    <option value="discount">discount</option>
+                    <option value="discount">Catalog</option>
+                    {catalog.map((el) => {
+                      return (
+                        <>
+                          <option value={`${el.id}`}>{el.catalog_name}</option>
+                        </>
+                      );
+                    })}
                   </select>
                   <select
                     name="filter"
                     className="outline-none rounded-md p-3 w-[200px] px-5 py-2 max-w-[268px]"
                     onChange={handleSub}
                   >
-                    <option value="discount">Subcategory</option>
+                    <option value="all">Subcategory</option>
                     {Categories.map((el) => {
                       return (
                         <>

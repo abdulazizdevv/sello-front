@@ -3,14 +3,6 @@ module.exports = {
   important: true,
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
-    // screens: {
-    //   lt: "400px",
-    //   sm: "600px",
-    //   md: "728px",
-    //   lg: "984px",
-    //   xl: "1140px",
-    //   "2xl": "1296px",
-    // },
     variants: {
       extend: {},
     },

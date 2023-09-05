@@ -1,3 +1,4 @@
+import { BASE_URL } from "@/api/main";
 import React, { useEffect, useRef, useState } from "react";
 import { BsChevronRight } from "react-icons/bs";
 import { GrClose } from "react-icons/gr";
@@ -6,13 +7,12 @@ import { GrClose } from "react-icons/gr";
 interface ModalProps {
   modal: boolean;
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
-  children: React.ReactNode;
 }
 
-export const Modal: React.FC<ModalProps> = ({ modal, setModal, children }) => {
+export const Modal: React.FC<ModalProps> = ({ modal, setModal }) => {
   const overlayRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<any[]>([]);
-  const [categoryData, setcategoryData] = useState<any[]>([]);
+  const [categoryData, setCategoryData] = useState<any[]>([]);
   const [categoryName, setCategory] = useState<string>("");
   const handleOverlay = (evt: React.MouseEvent<HTMLDivElement>) => {
     if (evt.target === overlayRef.current) {
@@ -21,18 +21,16 @@ export const Modal: React.FC<ModalProps> = ({ modal, setModal, children }) => {
   };
 
   useEffect(() => {
-    fetch("https://fakestoreapi.com/products/categories")
+    fetch(`${BASE_URL}/catalog`)
       .then((res) => res.json())
-      .then((json) => setData(json));
+      .then((json) => setData(json.data));
   }, []);
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch(
-        `https://fakestoreapi.com/products/category/${categoryName}`
-      );
+      const response = await fetch(`${BASE_URL}/catalog/${categoryName}`);
       const data = await response.json();
-      setcategoryData(data);
+      setCategoryData(data.data);
     }
 
     if (categoryName) {
@@ -56,10 +54,11 @@ export const Modal: React.FC<ModalProps> = ({ modal, setModal, children }) => {
                     return (
                       <>
                         <button
-                          onClick={() => setCategory(el)}
+                          key={el.id}
+                          onClick={() => setCategory(el.catalog_name)}
                           className="text-textColor p-2 cursor-pointer hover:bg-[rgba(80,219,207,.08)] hover:text-black rounded-md w-full text-[14px] flex items-center justify-between"
                         >
-                          {el} <BsChevronRight />
+                          {el.catalog_name} <BsChevronRight />
                         </button>
                       </>
                     );
@@ -68,18 +67,12 @@ export const Modal: React.FC<ModalProps> = ({ modal, setModal, children }) => {
               </div>
               <div className="line"></div>
               <div className="w-full md:w-3/5">
-                <h1 className="font-semibold text-[25px] capitalize">{categoryName}</h1>
-                {categoryData.map((el) => {
-                  return (
-                    <>
-                      <div></div>
-                    </>
-                  );
-                })}
+                <h1 className="font-semibold text-[25px] capitalize">
+                  {categoryName}
+                </h1>
               </div>
             </div>
           </div>
-          {/* <div className={`modal-content`}>{children}</div> */}
         </div>
       </div>
     </div>

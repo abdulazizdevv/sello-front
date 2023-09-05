@@ -131,7 +131,7 @@ export default function Home() {
             </Link>
           </div>
           <Link href="/singleproduct">
-            <p className="my-2 text-[14px] h-[70px] max-w-[185px]">
+            <p className="my-2 text-[14px] h-[40px] max-w-[185px]">
               {renderTitle(el.title)}
             </p>
             <h4 className="font-bold text-[16px]">{el.price} so'm</h4>

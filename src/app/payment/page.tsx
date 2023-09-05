@@ -10,7 +10,7 @@ import {
 import axios from "axios";
 import { BASE_URL } from "@/api/main";
 
-const CARD_OPTIONS = {
+const CARD_OPTIONS: any = {
   iconStyle: "solid",
   style: {
     base: {

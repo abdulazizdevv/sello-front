@@ -10,6 +10,7 @@ const nextConfig = {
       "10.10.1.25",
       "159.65.58.100",
       "157.230.2.35",
+      "sello.uz",
       "picsum.photos",
     ],
   },
