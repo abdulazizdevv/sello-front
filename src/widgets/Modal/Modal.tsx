@@ -1,8 +1,6 @@
 import { BASE_URL } from "@/api/main";
 import React, { useEffect, useRef, useState } from "react";
 import { BsChevronRight } from "react-icons/bs";
-import { GrClose } from "react-icons/gr";
-// import "./modal.css"
 
 interface ModalProps {
   modal: boolean;

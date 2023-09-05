@@ -32,7 +32,7 @@ export default function RootLayout({
   const [cart, setCart] = useState<number[]>(JSON.parse(getCartId));
   const getLikeId: any =
     typeof window !== "undefined" && window.localStorage.getItem("likeId");
-  const [like, setLike] = useState<number[]>(JSON.parse(getCartId));
+  const [like, setLike] = useState<number[]>(JSON.parse(getLikeId));
   return (
     <html lang="en">
       <Head>

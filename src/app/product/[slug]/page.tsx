@@ -131,10 +131,6 @@ export default function Page({ params }: any) {
     setSelectedLikeIds(storeLikeIds);
   }, []);
 
-  const singleProduct = (evt: any) => {
-    localStorage.setItem("singleId", JSON.stringify(evt));
-  };
-
   let allCartId;
   let allLikeId;
 
@@ -214,16 +210,8 @@ export default function Page({ params }: any) {
   };
   const handleCatalog = (evt: any) => {
     const res = evt.target.value;
-    console.log(res);
     router.push(`/product/${res}`);
-    // fetch(`${BASE_URL}/catalog/${+res}`)
-    //   .then((res) => res.json())
-    //   .then((json) => {
-    //     setData(json.data);
-    //     setLoading(false);
-    //   });
   };
-  // console.log(data);
 
   const categories = data.map((el: any) => {
     return (

@@ -17,21 +17,12 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Link from "next/link";
 import { BASE_URL, BASE_URL_IMG } from "@/api/main";
-type clickPrev = {
-  clickHandler: any;
-  hasPrev: any;
-  label: any;
-};
+
 export default function SingleProduct() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [data, setData] = useState<any[]>([]);
   const [show, setShow] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  // useEffect(() => {
-  //   fetch("https://fakestoreapi.com/products")
-  //     .then((res) => res.json())
-  //     .then((json) => setData(json));
-  // }, []);
 
   useEffect(() => {
     const singleId = localStorage.getItem("singleId");
@@ -70,7 +61,6 @@ export default function SingleProduct() {
       }
     });
   };
-  // console.log(data);
   const renderTitle = (title: string) => {
     if (title.length > 15) {
       return title.substring(0, 15) + "...";
@@ -137,7 +127,6 @@ export default function SingleProduct() {
                   autoPlay={false}
                   showStatus={false}
                   showIndicators={false}
-                  // onChange={(currentSlide) => setCurrentSlide(currentSlide)}
                   selectedItem={currentSlide}
                 >
                   {data.map((el: any) => {
@@ -151,7 +140,6 @@ export default function SingleProduct() {
                               height={150}
                               alt="pic"
                               className="max-w-[350px] h-[400px]"
-                              // style={{ width: "100%" }}
                             />
                           </div>
                         </div>
@@ -220,15 +208,13 @@ export default function SingleProduct() {
                   <div className="flex gap-3">
                     <button
                       className="bg-mainColor p-2 text-white w-full mt-3 rounded-lg"
-                      // onClick={sendTelegram}
                     >
                       <ToastContainer />
-                      Go to the ordering
+                   Ordering
                     </button>
                     <Link href="/payment" className="w-full">
                       <button
                         className="bg-mainColor p-2 text-white w-full mt-3 rounded-lg"
-                        // onClick={sendTelegram}
                       >
                         <ToastContainer />
                         Payment

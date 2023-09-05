@@ -49,7 +49,6 @@ export default function Like() {
           })
           .catch((err) => console.log(err))
       );
-      console.log(fetchData);
       try {
         const results = await Promise.all(fetchPromises);
         setData(results);
@@ -68,9 +67,7 @@ export default function Like() {
     }
     return title;
   };
-  // const singleProduct = (evt: any) => {
-  //   localStorage.setItem("singleId", JSON.stringify(evt));
-  // };
+
   const handleLikeClick = (id: number) => {
     if (!selectedLikeIds.includes(id)) {
       const updatedProductIds = [...selectedLikeIds, id];

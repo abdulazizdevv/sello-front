@@ -3,11 +3,8 @@ import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
 import Banner from "./Banner/Banner";
 
-interface topChildren {
-  children: any;
-}
 
-export default function Layout({ children }: topChildren) {
+export default function Layout({ children }: any) {
   return (
     <div>
       <div>

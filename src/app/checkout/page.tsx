@@ -4,13 +4,8 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { AiOutlineExclamationCircle, AiOutlineHeart } from "react-icons/ai";
 import { BsTruck } from "react-icons/bs";
-import { PiTrash } from "react-icons/pi";
 import { LiaCubeSolid } from "react-icons/lia";
-// import { sendTelegramMessage } from "./api/message";
 import { ToastContainer, toast } from "react-toastify";
-import { IoMdClose } from "react-icons/io";
-import { CiSquareMinus, CiSquarePlus } from "react-icons/ci";
-import { BsPlusSquare } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 
 export default function Checkout() {
@@ -129,23 +124,6 @@ export default function Checkout() {
     localStorage.setItem("selectedProductIds", JSON.stringify(updatedCards));
   };
 
-  const sendTelegram = () => {
-    const botToken = "6633867633:AAFc8HNujHnb36ISPc5XfzXO9O3rjfT8ew4";
-    const chatId = "-1001848608431";
-    const message = `Username: Ali\nProduct title: ${title},\nCount: ${count},\nPrice: ${price}$.`;
-    // sendTelegramMessage({ botToken, chatId, message })
-    // .then((success) => {
-    //   if (success) {
-    //     toast.success("Successfully Checkout");
-    //   } else {
-    //     toast.error("Empty");
-    //   }
-    // })
-    // .catch((error) => {
-    //   console.error("Error:", error);
-    // });
-  };
-
   return (
     <div>
       <div className="bg-bgColor py-[12px]">
@@ -261,7 +239,6 @@ export default function Checkout() {
               <button
                 onClick={() => router.push("/payment")}
                 className="bg-mainColor p-3 text-white w-full mt-3 rounded-md"
-                // onClick={sendTelegram}
               >
                 <ToastContainer />
                 Checkout

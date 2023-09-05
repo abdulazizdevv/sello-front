@@ -5,16 +5,12 @@ import {
   AiOutlineSearch,
   AiOutlineShoppingCart,
 } from "react-icons/ai";
-import { BsGlobeAmericas } from "react-icons/bs";
-import { PiCameraRotate } from "react-icons/pi";
+
 import { AiOutlineHeart } from "react-icons/ai";
 import { FaRegUser } from "react-icons/fa";
-import { FaBars } from "react-icons/fa";
-import { GrCart, GrClose } from "react-icons/gr";
 import { LuHome } from "react-icons/lu";
 import Image from "next/image";
 import Link from "next/link";
-import Cookie from "js-cookie";
 import Logo from "../../../public/icons/logo.svg";
 import { useContext, useEffect, useState } from "react";
 import Categories from "@/app/product";
@@ -78,7 +74,7 @@ function Navbar() {
     setShowSuggestions(true);
   };
 
-  // console.log(cart.length);
+
 
   const handleSubmit = (evt: any) => {
     evt.preventDefault();
@@ -134,8 +130,7 @@ function Navbar() {
           toast.success("Successfully!", {
             position: toast.POSITION.TOP_RIGHT,
           });
-          // setLoginProfileModal(false);
-          // setVerifyModal(false);
+       
         } else {
           toast.error("No information entered", {
             position: toast.POSITION.TOP_RIGHT,
@@ -148,7 +143,6 @@ function Navbar() {
   const singleProduct = (evt: any) => {
     localStorage.setItem("singleId", JSON.stringify(evt));
   };
-  const handleClick = () => {};
   return (
     <div>
       <div className="relative">
@@ -326,97 +320,99 @@ function Navbar() {
           <Categories />
         </div>
       </div>
-      <ProfileModal
-        width={"480px"}
-        title={"Login"}
-        modal={loginProfileModal}
-        setModal={setLoginProfileModal}
-      >
-        <div className=" md:p-5 ">
-          <form
-            className="flex flex-col items-center gap-3 justify-center"
-            onSubmit={handleSubmit}
-          >
-            <div className="flex flex-col gap-2">
-              <label htmlFor="email">Email</label>
-              <input
-                className="w-full p-2 rounded-md outline-none border border-textColor"
-                placeholder="Email"
-                type="text"
-                name="email"
-                id="email"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="password">Password</label>
-              <input
-                className="w-full p-2 rounded-md outline-none border border-textColor"
-                placeholder="*****"
-                type="password"
-                name="password"
-                id="phone"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="phoneNumber">Phone Number</label>
-              <input
-                className="w-full p-2 rounded-md outline-none border border-textColor"
-                placeholder="Phone number"
-                type="tel"
-                name="phoneNumber"
-                id="phone"
-              />
-            </div>
-            <div>
-              <button
-                type="submit"
-                className="bg-mainColor p-3 mt-3 text-white w-[200px]"
-              >
-                <ToastContainer />
-                Log In
-              </button>
-            </div>
-          </form>
-        </div>
-      </ProfileModal>
-      <VerifyModal
-        width={"480px"}
-        title={"Verify"}
-        modal={verifyModal}
-        setModal={setVerifyModal}
-      >
-        <div className=" md:p-5 ">
-          <form
-            className="flex flex-col items-center gap-3 justify-center"
-            onSubmit={handleSubmitVerify}
-          >
-            <div className="flex flex-col gap-2">
-              <label htmlFor="text">Verify Code</label>
-              <input
-                className="w-full p-2 rounded-md outline-none border border-textColor"
-                placeholder="*****"
-                type="text"
-                name="text"
-                id="phone"
-              />
-            </div>
-            <div>
-              <button
-                type="submit"
-                className="bg-mainColor p-3 mt-3 text-white w-[200px]"
-              >
-                <ToastContainer />
-                Login
-              </button>
-            </div>
-          </form>
-        </div>
-      </VerifyModal>
-      <ResponsiveModal
-        modal={responsiveModal}
-        setModal={setResponsiveModal}
-      ></ResponsiveModal>
-      <Modal modal={loginModal} setModal={setLoginModal}></Modal>
+      <div>
+        <ProfileModal
+          width={"480px"}
+          title={"Login"}
+          modal={loginProfileModal}
+          setModal={setLoginProfileModal}
+        >
+          <div className=" md:p-5 ">
+            <form
+              className="flex flex-col items-center gap-3 justify-center"
+              onSubmit={handleSubmit}
+            >
+              <div className="flex flex-col gap-2">
+                <label htmlFor="email">Email</label>
+                <input
+                  className="w-full p-2 rounded-md outline-none border border-textColor"
+                  placeholder="Email"
+                  type="text"
+                  name="email"
+                  id="email"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="password">Password</label>
+                <input
+                  className="w-full p-2 rounded-md outline-none border border-textColor"
+                  placeholder="*****"
+                  type="password"
+                  name="password"
+                  id="phone"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="phoneNumber">Phone Number</label>
+                <input
+                  className="w-full p-2 rounded-md outline-none border border-textColor"
+                  placeholder="Phone number"
+                  type="tel"
+                  name="phoneNumber"
+                  id="phone"
+                />
+              </div>
+              <div>
+                <button
+                  type="submit"
+                  className="bg-mainColor p-3 mt-3 text-white w-[200px]"
+                >
+                  <ToastContainer />
+                  Log In
+                </button>
+              </div>
+            </form>
+          </div>
+        </ProfileModal>
+        <VerifyModal
+          width={"480px"}
+          title={"Verify"}
+          modal={verifyModal}
+          setModal={setVerifyModal}
+        >
+          <div className=" md:p-5 ">
+            <form
+              className="flex flex-col items-center gap-3 justify-center"
+              onSubmit={handleSubmitVerify}
+            >
+              <div className="flex flex-col gap-2">
+                <label htmlFor="text">Verify Code</label>
+                <input
+                  className="w-full p-2 rounded-md outline-none border border-textColor"
+                  placeholder="*****"
+                  type="text"
+                  name="text"
+                  id="phone"
+                />
+              </div>
+              <div>
+                <button
+                  type="submit"
+                  className="bg-mainColor p-3 mt-3 text-white w-[200px]"
+                >
+                  <ToastContainer />
+                  Login
+                </button>
+              </div>
+            </form>
+          </div>
+        </VerifyModal>
+        <ResponsiveModal
+          modal={responsiveModal}
+          setModal={setResponsiveModal}
+        ></ResponsiveModal>
+        <Modal modal={loginModal} setModal={setLoginModal}></Modal>
+      </div>
     </div>
   );
 }

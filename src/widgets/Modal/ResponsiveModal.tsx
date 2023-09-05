@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineHeart } from "react-icons/ai";
 import { BsChevronRight } from "react-icons/bs";
 import { FiUser } from "react-icons/fi";
-import { GrClose } from "react-icons/gr";
 import { IoMdClose } from "react-icons/io";
 import { PiWalletLight } from "react-icons/pi";
 import Location from "../../../public/icons/location.svg";
